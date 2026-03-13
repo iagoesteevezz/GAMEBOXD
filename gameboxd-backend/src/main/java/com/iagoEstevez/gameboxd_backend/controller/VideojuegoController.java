@@ -2,6 +2,8 @@ package com.iagoEstevez.gameboxd_backend.controller;
 
 import com.iagoEstevez.gameboxd_backend.model.Videojuego;
 import com.iagoEstevez.gameboxd_backend.repository.VideojuegoRepository;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/juegos")
 public class VideojuegoController {
 
