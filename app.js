@@ -1,45 +1,63 @@
-// La dirección donde está escuchando tu servidor Java
-const API_URL = 'http://localhost:8080/api/juegos';
+const API_LOCAL_URL = 'http://localhost:8080/api/juegos';
+const RAWG_API_KEY = '71aa0ada5fd74ec8b71f1c7b3e52854b';
 
-// Función principal que se conecta al backend
-async function cargarJuegos() {
+// 1. FUNCIÓN PARA CARGAR TUS JUEGOS 
+async function cargarJuegosLocales() {
     try {
-        // 1. Llamamos al backend
-        const respuesta = await fetch(API_URL);
-        
-        // 2. Convertimos el texto JSON en un array de objetos que JavaScript entiende
-        const juegos = await respuesta.json(); 
-
-        // 3. Buscamos el div vacío de nuestro HTML
-        const contenedor = document.getElementById('contenedor-juegos');
-        contenedor.innerHTML = ''; // Borramos el texto de "Cargando..."
-
-        // 4. Recorremos la lista de juegos que nos dio Java
-        juegos.forEach(juego => {
-            // Creamos una "tarjeta" (un div) para cada juego
-            const tarjeta = document.createElement('div');
-            tarjeta.className = 'tarjeta-juego';
-
-            // Si el juego no tiene portada en la BD, le ponemos un recuadro gris por defecto
-            const urlPortada = juego.portadaUrl ? juego.portadaUrl : 'https://via.placeholder.com/150x220?text=Sin+Portada';
-
-            // Le metemos el HTML interno a la tarjeta con los datos reales
-            tarjeta.innerHTML = `
-                <img src="${urlPortada}" alt="Portada de ${juego.titulo}">
-                <h3>${juego.titulo}</h3>
-                <p class="desarrollador">${juego.desarrollador}</p>
-                <p class="fecha">${juego.fechaLanzamiento}</p>
-            `;
-
-            // Añadimos la tarjeta terminada al contenedor principal
-            contenedor.appendChild(tarjeta);
-        });
-
+        const respuesta = await fetch(API_LOCAL_URL);
+        const juegos = await respuesta.json();
+        renderizarJuegos(juegos, "Mis Juegos Guardados");
     } catch (error) {
-        console.error('Error al cargar los juegos:', error);
-        document.getElementById('contenedor-juegos').innerHTML = '<p>Error al conectar con el servidor.</p>';
+        console.error('Error al cargar locales:', error);
     }
 }
 
-// Le decimos que ejecute la función nada más abrir la página
-cargarJuegos();
+// 2. FUNCIÓN PARA BUSCAR EN LA API EXTERNA (RAWG)
+async function buscarEnRAWG() {
+    const busqueda = document.getElementById('input-busqueda').value;
+    if (!busqueda) return;
+
+    const url = `https://api.rawg.io/api/games?search=${busqueda}&key=${RAWG_API_KEY}`;
+    
+    try {
+        const respuesta = await fetch(url);
+        const datos = await respuesta.json();
+        // RAWG nos da los juegos en una lista llamada 'results'
+        renderizarJuegos(datos.results, `Resultados para: ${busqueda}`, true);
+    } catch (error) {
+        console.error('Error en RAWG:', error);
+    }
+}
+
+// 3. FUNCIÓN PARA PINTAR LAS TARJETAS (REUTILIZABLE)
+function renderizarJuegos(lista, tituloSeccion, esBusquedaExternal = false) {
+    const contenedor = document.getElementById('contenedor-juegos');
+    contenedor.innerHTML = ''; // Limpiamos la pantalla
+    
+    // Actualizamos el título de la sección si quieres
+    document.querySelector('h2').innerText = tituloSeccion;
+
+    lista.forEach(juego => {
+        const tarjeta = document.createElement('div');
+        tarjeta.className = 'tarjeta-juego';
+
+        // RAWG usa 'name' y 'background_image', tu Java usa 'titulo' y 'portadaUrl'
+        // Usamos || para que elija la que exista
+        const titulo = juego.name || juego.titulo;
+        const imagen = juego.background_image || juego.portadaUrl || 'https://via.placeholder.com/150x220?text=Sin+Portada';
+        const fecha = juego.released || juego.fechaLanzamiento || 'Sin fecha';
+
+        tarjeta.innerHTML = `
+            <img src="${imagen}" alt="${titulo}">
+            <h3>${titulo}</h3>
+            <p class="fecha">${fecha}</p>
+            ${esBusquedaExternal ? `<button class="btn-add" onclick="guardarEnMiBD('${juego.id}')">➕ Añadir</button>` : ''}
+        `;
+
+        contenedor.appendChild(tarjeta);
+    });
+}
+// Al cargar, que busque juegos populares por defecto
+document.getElementById('input-busqueda').value = "Grand Theft Auto";
+buscarEnRAWG();
+document.getElementById('input-busqueda').value = ""; 
