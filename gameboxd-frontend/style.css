@@ -221,3 +221,94 @@ main {
     min-height: 100px;
     margin-top: 5px;
 }
+/* --- NUEVO DISEÑO DE PERFIL CON HOVER (ESTILO LETTERBOXD) --- */
+
+/* Contenedor principal de cada juego en el perfil */
+.entrada-log-container {
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.entrada-log-container:hover {
+    transform: scale(1.05);
+    z-index: 10;
+}
+
+/* El cuadro del póster */
+.tarjeta-poster {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    background-color: #2c3440;
+}
+
+.portada-perfil {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* LA CAPA OSCURA (OVERLAY) */
+.info-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(20, 24, 28, 0.9); 
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center;
+    padding: 15px;
+    box-sizing: border-box;
+    text-align: center;
+    
+    /* Estado inicial: Invisible */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Al hacer hover, mostramos la capa */
+.entrada-log-container:hover .info-overlay {
+    opacity: 1;
+}
+
+/* Detalles dentro del hover */
+.puntuacion-overlay {
+    color: #00e676; /* Verde neón */
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+}
+
+.fecha-overlay {
+    color: #9ab;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.resena-overlay {
+    font-size: 12px;
+    line-height: 1.4;
+    font-style: italic;
+    color: #cbd5e1;
+    /* Cortar texto si es muy largo */
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.titulo-overlay {
+    font-size: 13px;
+    font-weight: bold;
+    margin: 0;
+}

@@ -24,42 +24,64 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function cargarMisJuegos(usuarioId) {
     try {
-        // OJO: Esta URL todavía no existe en tu Java. 
-        // Estamos dejando el cable preparado para conectarlo en el siguiente paso.
         const url = `http://localhost:8080/api/juegos/usuario/${usuarioId}`;
         const respuesta = await fetch(url);
-        
-        if (!respuesta.ok) {
-            throw new Error("Endpoint no preparado en el backend");
-        }
-
         const misJuegos = await respuesta.json();
         const contenedor = document.getElementById('contenedor-mis-juegos');
-        contenedor.innerHTML = ''; // Limpiamos el texto de carga
+        contenedor.innerHTML = '';
 
-        // Si la lista está vacía, le avisamos
         if (misJuegos.length === 0) {
-            contenedor.innerHTML = '<p style="color: #9ab;">Aún no has guardado ningún juego. ¡Ve al inicio y busca algunos!</p>';
+            contenedor.innerHTML = '<p style="color: #9ab;">Aún no has registrado ningún juego.</p>';
             return;
         }
 
-        // Pintamos las tarjetas
         misJuegos.forEach(juego => {
-            const tarjeta = document.createElement('div');
-            tarjeta.className = 'tarjeta-juego';
+            const divEntrada = document.createElement('div');
+            divEntrada.className = 'entrada-log-container'; // Nuevo contenedor principal
 
-            tarjeta.innerHTML = `
-                <img src="${juego.portadaUrl}" alt="Portada de ${juego.titulo}">
-                <h3>${juego.titulo}</h3>
-                <p class="fecha">${juego.fechaLanzamiento}</p>
+            const estrellasHTML = generarEstrellas(juego.puntuacion);
+            
+            // Recortamos la reseña si es muy larga para que no rompa el diseño
+            const resenaCorta = juego.resena && juego.resena.length > 100 
+                ? juego.resena.substring(0, 100) + '...' 
+                : (juego.resena || "Sin reseña...");
+
+            divEntrada.innerHTML = `
+                <div class="tarjeta-poster">
+                    <img src="${juego.portadaUrl}" class="portada-perfil">
+                    
+                    <div class="info-overlay">
+                        <div class="puntuacion-overlay">${estrellasHTML}</div>
+                        <span class="fecha-overlay">${formatearFecha(juego.fechaJugado)}</span>
+                        <p class="resena-overlay">${resenaCorta}</p>
+                        <h3 class="titulo-overlay">${juego.titulo}</h3>
+                    </div>
+                </div>
             `;
-
-            contenedor.appendChild(tarjeta);
+            contenedor.appendChild(divEntrada);
         });
 
     } catch (error) {
-        console.error('Error al cargar la colección:', error);
-        document.getElementById('contenedor-mis-juegos').innerHTML = 
-            '<p style="color: #ff5252; font-weight: bold;">Falta enseñar a Java a filtrar los juegos. ¡Vamos al backend!</p>';
+        console.error('Error:', error);
     }
+}
+
+// Función auxiliar para dibujar las estrellas
+function generarEstrellas(nota) {
+    let html = '';
+    for (let i = 1; i <= 5; i++) {
+        if (nota >= i) {
+            html += '<i class="fa fa-star"></i>'; // Estrella entera
+        } else if (nota >= i - 0.5) {
+            html += '<i class="fa fa-star-half-o"></i>'; // Media estrella
+        } else {
+            html += '<i class="fa fa-star-o"></i>'; // Estrella vacía
+        }
+    }
+    return html;
+}
+
+function formatearFecha(fechaStr) {
+    const opciones = { day: 'numeric', month: 'short', year: 'numeric' };
+    return new Date(fechaStr).toLocaleDateString('es-ES', opciones);
 }
