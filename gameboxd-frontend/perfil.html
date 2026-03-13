@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gameboxd - Mi Perfil</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header style="display: flex; justify-content: space-between; align-items: center; padding: 20px 40px;">
+        <h1 style="margin: 0;"><a href="index.html" style="color: white; text-decoration: none;">Gameboxd</a></h1>
+        <div id="zona-usuario">
+            <a href="index.html" style="color: #9ab; text-decoration: none; font-weight: bold;">Volver al Buscador</a>
+        </div>
+    </header>
+
+    <main>
+        <div style="text-align: center; margin-bottom: 40px; background-color: #2c3440; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+            <img src="" alt="Avatar" id="avatar-perfil" style="width: 120px; height: 120px; border-radius: 50%; background-color: #14181c; margin-bottom: 15px; border: 3px solid #00e676;">
+            <h2 id="nombre-perfil" style="margin: 0; font-size: 32px;">Cargando perfil...</h2>
+            <p style="color: #00e676; font-weight: bold; margin-top: 5px;">Tu Colección de Juegos</p>
+        </div>
+
+        <h3>Mis Juegos Guardados</h3>
+        <div id="contenedor-mis-juegos" class="grid-juegos">
+            <p>Conectando con la base de datos...</p>
+        </div>
+    </main>
+
+    <script src="perfil.js"></script>
+</body>
+</html>

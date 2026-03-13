@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gameboxd - Inicio</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
     <header style="display: flex; justify-content: space-between; align-items: center; padding: 20px 40px;">
@@ -28,6 +29,49 @@
             <p>Escribe un juego en el buscador para empezar...</p>
         </div>
     </main>
+
+    <div id="modal-log" class="modal-oculto">
+        <div class="contenido-modal">
+            <span class="cerrar-modal" onclick="cerrarModal()">&times;</span>
+            <h2 id="titulo-juego-modal">Registrar Juego</h2>
+            
+            <div style="display: flex; gap: 20px; margin-top: 20px;">
+                <img id="portada-juego-modal" src="" style="width: 100px; border-radius: 4px;">
+                
+                <form id="form-log" style="flex-grow: 1; text-align: left;">
+                    
+                    <div class="grupo-input">
+                        <label>Fecha en la que lo jugaste:</label>
+                        <input type="date" id="fecha-log" required>
+                    </div>
+
+                    <div class="grupo-input">
+                        <label>Puntuación:</label>
+                        <div class="rating-estrellas">
+                            <input type="radio" name="rating" value="5" id="star5"><label for="star5" class="full"></label>
+                            <input type="radio" name="rating" value="4.5" id="star4half"><label for="star4half" class="half"></label>
+                            <input type="radio" name="rating" value="4" id="star4"><label for="star4" class="full"></label>
+                            <input type="radio" name="rating" value="3.5" id="star3half"><label for="star3half" class="half"></label>
+                            <input type="radio" name="rating" value="3" id="star3"><label for="star3" class="full"></label>
+                            <input type="radio" name="rating" value="2.5" id="star2half"><label for="star2half" class="half"></label>
+                            <input type="radio" name="rating" value="2" id="star2"><label for="star2" class="full"></label>
+                            <input type="radio" name="rating" value="1.5" id="star1half"><label for="star1half" class="half"></label>
+                            <input type="radio" name="rating" value="1" id="star1"><label for="star1" class="full"></label>
+                            <input type="radio" name="rating" value="0.5" id="starhalf"><label for="starhalf" class="half"></label>
+                        </div>
+                        <input type="hidden" id="nota-log-valor" value="0">
+                    </div>
+
+                    <div class="grupo-input">
+                        <label>Tu reseña:</label>
+                        <textarea id="resena-log" rows="4" placeholder="¿Qué te pareció el juego?..." style="width: 100%; padding: 10px; border-radius: 4px; background: #14181c; color: white; border: 1px solid #455a64;"></textarea>
+                    </div>
+
+                    <button type="button" class="btn-principal" onclick="enviarLogFinal()">Guardar en mi Diario</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script src="app.js"></script>
 </body>

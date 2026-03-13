@@ -1,5 +1,6 @@
 const API_LOCAL_URL = 'http://localhost:8080/api/juegos';
 const RAWG_API_KEY = '71aa0ada5fd74ec8b71f1c7b3e52854b';
+let resultadosBusquedaTemporal = [];
 
 // 1. FUNCIÓN PARA CARGAR TUS JUEGOS 
 async function cargarJuegosLocales() {
@@ -23,6 +24,7 @@ async function buscarEnRAWG() {
         const respuesta = await fetch(url);
         const datos = await respuesta.json();
         // RAWG nos da los juegos en una lista llamada 'results'
+        resultadosBusquedaTemporal = datos.results;
         renderizarJuegos(datos.results, `Resultados para: ${busqueda}`, true);
     } catch (error) {
         console.error('Error en RAWG:', error);
@@ -51,7 +53,7 @@ function renderizarJuegos(lista, tituloSeccion, esBusquedaExternal = false) {
             <img src="${imagen}" alt="${titulo}">
             <h3>${titulo}</h3>
             <p class="fecha">${fecha}</p>
-            ${esBusquedaExternal ? `<button class="btn-add" onclick="guardarEnMiBD('${juego.id}')">➕ Añadir</button>` : ''}
+            ${esBusquedaExternal ? `<button class="btn-add" onclick="abrirModalLog('${juego.id}')">➕ Log</button>` : ''}
         `;
 
         contenedor.appendChild(tarjeta);
@@ -95,3 +97,93 @@ function cerrarSesion() {
 
 // Le decimos a la página que ejecute al vigilante nada más cargar
 document.addEventListener('DOMContentLoaded', comprobarSesion);
+
+// --- LÓGICA DEL DIARIO (LOG)
+// --- LÓGICA DEL DIARIO (LOG) ---
+
+let juegoActualParaLog = null; 
+
+function abrirModalLog(idRawg) {
+    const usuarioGuardado = localStorage.getItem('usuarioGameboxd');
+    if (!usuarioGuardado) {
+        alert("¡Debes iniciar sesión para registrar juegos!");
+        window.location.href = 'login.html';
+        return;
+    }
+
+    // Buscamos el juego. ID de RAWG suele ser número, así que comparamos con ==
+    juegoActualParaLog = resultadosBusquedaTemporal.find(j => j.id == idRawg);
+
+    if (!juegoActualParaLog) {
+        alert("Error al recuperar los datos del juego. Intenta buscarlo de nuevo.");
+        return;
+    }
+
+    document.getElementById('titulo-juego-modal').innerText = `Registrar: ${juegoActualParaLog.name}`;
+    
+    const urlPortada = juegoActualParaLog.background_image ? juegoActualParaLog.background_image : 'https://via.placeholder.com/150x220?text=Sin+Portada';
+    document.getElementById('portada-juego-modal').src = urlPortada;
+
+    document.getElementById('modal-log').style.display = 'flex';
+    document.getElementById('fecha-log').valueAsDate = new Date();
+}
+
+function cerrarModal() {
+    document.getElementById('modal-log').style.display = 'none';
+    // No vaciamos juegoActualParaLog aquí para evitar errores si el fetch tarda
+    document.getElementById('form-log').reset(); 
+}
+
+async function enviarLogFinal() {
+    // Comprobación de seguridad
+    if (!juegoActualParaLog) {
+        alert("No hay ningún juego seleccionado.");
+        return;
+    }
+
+    const usuarioGuardado = localStorage.getItem('usuarioGameboxd');
+    const usuario = JSON.parse(usuarioGuardado);
+
+    const fecha = document.getElementById('fecha-log').value;
+    const resena = document.getElementById('resena-log').value;
+    const estrellaSeleccionada = document.querySelector('input[name="rating"]:checked');
+    const nota = estrellaSeleccionada ? estrellaSeleccionada.value : 0;
+
+    if (!fecha || nota == 0) {
+        alert("Por favor, selecciona una puntuación con las estrellas y pon una fecha.");
+        return;
+    }
+
+    const juegoParaGuardar = {
+        titulo: juegoActualParaLog.name,
+        descripcion: "Añadido desde RAWG",
+        desarrollador: "Desconocido",
+        fechaLanzamiento: juegoActualParaLog.released || "2000-01-01",
+        portadaUrl: juegoActualParaLog.background_image,
+        usuarioId: usuario.id,
+        puntuacion: parseFloat(nota),
+        resena: resena,
+        fechaJugado: fecha
+    };
+
+    try {
+        const respuesta = await fetch(API_LOCAL_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(juegoParaGuardar)
+        });
+
+        if (respuesta.ok) {
+            alert(`¡"${juegoActualParaLog.name}" registrado con ${nota} estrellas!`);
+            cerrarModal();
+            juegoActualParaLog = null; // Ahora sí lo vaciamos
+        } else {
+            const errorTexto = await respuesta.text();
+            console.error("Error backend:", errorTexto);
+            alert("El servidor no pudo guardar el juego. Revisa los tipos de datos en Java.");
+        }
+    } catch (error) {
+        console.error("Error al guardar:", error);
+        alert("Error de conexión con el servidor. ¿Está Java encendido?");
+    }
+}
