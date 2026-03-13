@@ -40,3 +40,46 @@ document.getElementById('form-registro')?.addEventListener('submit', async funct
         alert('No se ha podido conectar con el servidor.');
     }
 });
+
+// --- LÓGICA DE INICIO DE SESIÓN ---
+document.getElementById('form-login')?.addEventListener('submit', async function(evento) {
+    evento.preventDefault(); // Evitamos que la página recargue
+
+    // Recogemos los datos
+    const emailTexto = document.getElementById('email-login').value;
+    const passwordTexto = document.getElementById('password-login').value;
+
+    // Empaquetamos para enviarlo tal y como lo espera Java (un Map/JSON)
+    const credenciales = {
+        email: emailTexto,
+        password: passwordTexto
+    };
+
+    try {
+        const respuesta = await fetch('http://localhost:8080/api/usuarios/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(credenciales)
+        });
+
+        if (respuesta.ok) {
+            // ¡Login correcto! Java nos devuelve los datos del usuario
+            const usuarioLogueado = await respuesta.json();
+            
+            // ¡MAGIA! Guardamos al usuario en la "mochila" del navegador
+            localStorage.setItem('usuarioGameboxd', JSON.stringify(usuarioLogueado));
+            
+            alert(`¡Bienvenido de nuevo, ${usuarioLogueado.username}!`);
+            window.location.href = 'index.html'; // Lo mandamos a la pantalla principal
+        } else {
+            // Login incorrecto (error 401 que configuramos en Java)
+            alert('Correo o contraseña incorrectos. Inténtalo de nuevo.');
+        }
+
+    } catch (error) {
+        console.error('Error al conectar con Java:', error);
+        alert('No se ha podido conectar con el servidor.');
+    }
+});

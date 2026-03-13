@@ -61,3 +61,37 @@ function renderizarJuegos(lista, tituloSeccion, esBusquedaExternal = false) {
 document.getElementById('input-busqueda').value = "Grand Theft Auto";
 buscarEnRAWG();
 document.getElementById('input-busqueda').value = ""; 
+
+// --- LÓGICA DE SESIÓN (EL VIGILANTE) ---
+
+function comprobarSesion() {
+    // 1. Miramos en la "mochila" del navegador
+    const usuarioGuardado = localStorage.getItem('usuarioGameboxd');
+    const zonaUsuario = document.getElementById('zona-usuario');
+
+    // 2. Si hay un usuario guardado y estamos en una página con la "zona-usuario"
+    if (usuarioGuardado && zonaUsuario) {
+        // Traducimos el texto a un objeto JavaScript
+        const usuario = JSON.parse(usuarioGuardado);
+
+        // 3. Cambiamos el HTML de esa zona
+        zonaUsuario.innerHTML = `
+            <span style="color: white; margin-right: 15px; font-size: 16px;">Hola, <strong>${usuario.username}</strong></span>
+            <a href="perfil.html" style="color: #00e676; margin-right: 15px; text-decoration: none; font-weight: bold;">Mi Perfil</a>
+            <button onclick="cerrarSesion()" style="background: transparent; border: 1px solid #ff5252; color: #ff5252; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.2s;">
+                Cerrar Sesión
+            </button>
+        `;
+    }
+}
+
+// Función para el botón de salir
+function cerrarSesion() {
+    // Vaciamos la mochila
+    localStorage.removeItem('usuarioGameboxd');
+    // Recargamos la página para que vuelvan a salir los botones por defecto
+    window.location.reload();
+}
+
+// Le decimos a la página que ejecute al vigilante nada más cargar
+document.addEventListener('DOMContentLoaded', comprobarSesion);

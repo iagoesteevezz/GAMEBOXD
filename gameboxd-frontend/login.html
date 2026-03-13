@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gameboxd - Iniciar Sesión</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header style="padding: 20px 40px;">
+        <h1 style="margin: 0; text-align: center;"><a href="index.html" style="color: white; text-decoration: none;">Gameboxd</a></h1>
+    </header>
+
+    <main class="contenedor-centrado">
+        <div class="caja-formulario">
+            <h2>Bienvenido de nuevo</h2>
+            <p>Inicia sesión para ver tu perfil y listas.</p>
+            
+            <form id="form-login">
+                <div class="grupo-input">
+                    <label for="email-login">Correo electrónico</label>
+                    <input type="email" id="email-login" placeholder="tu@email.com" required>
+                </div>
+                
+                <div class="grupo-input">
+                    <label for="password-login">Contraseña</label>
+                    <input type="password" id="password-login" placeholder="Tu contraseña" required>
+                </div>
+                
+                <button type="submit" class="btn-principal">Entrar</button>
+            </form>
+            
+            <p class="enlace-pie">¿No tienes cuenta? <a href="registro.html">Regístrate aquí</a></p>
+        </div>
+    </main>
+
+    <script src="auth.js"></script>
+</body>
+</html>
