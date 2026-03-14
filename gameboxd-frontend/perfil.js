@@ -1,3 +1,4 @@
+let listaJuegosPerfil = []; // Memoria para guardar los juegos y poder abrirlos luego
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Comprobamos si el usuario tiene permiso para estar aquí
     const usuarioGuardado = localStorage.getItem('usuarioGameboxd');
@@ -22,26 +23,50 @@ document.addEventListener('DOMContentLoaded', () => {
     cargarMisJuegos(usuario.id);
 });
 
+function actualizarContadores(misJuegos) {
+    const total = misJuegos.length;
+    
+    // Filtramos los de este año (2026)
+    const esteAno = misJuegos.filter(j => {
+        return new Date(j.fechaJugado).getFullYear() === 2026;
+    }).length;
+
+    // Calculamos la nota media
+    const sumaNotas = misJuegos.reduce((acc, j) => acc + (j.puntuacion || 0), 0);
+    const media = total > 0 ? (sumaNotas / total).toFixed(1) : "0.0";
+
+    // Los pintamos en el HTML
+    document.getElementById('stat-total').innerText = total;
+    document.getElementById('stat-year').innerText = esteAno;
+    document.getElementById('stat-rating').innerText = media;
+}
+
 async function cargarMisJuegos(usuarioId) {
     try {
         const url = `http://localhost:8080/api/juegos/usuario/${usuarioId}`;
         const respuesta = await fetch(url);
         const misJuegos = await respuesta.json();
+        listaJuegosPerfil = misJuegos;
+        // 1. ¡ACTUALIZAMOS CONTADORES AQUÍ MISMO! 
+        // Así ya tenemos los datos frescos antes de hacer nada más.
+        actualizarContadores(misJuegos);
+
         const contenedor = document.getElementById('contenedor-mis-juegos');
         contenedor.innerHTML = '';
 
+        // 2. Comprobamos si hay juegos para pintar
         if (misJuegos.length === 0) {
             contenedor.innerHTML = '<p style="color: #9ab;">Aún no has registrado ningún juego.</p>';
             return;
         }
 
-        misJuegos.forEach(juego => {
+        // 3. Pintamos las tarjetas
+        listaJuegosPerfil.forEach((juego, index) => {
             const divEntrada = document.createElement('div');
-            divEntrada.className = 'entrada-log-container'; // Nuevo contenedor principal
-
+            divEntrada.className = 'entrada-log-container';
+            divEntrada.setAttribute('onclick', `abrirModalReview(${index})`);
             const estrellasHTML = generarEstrellas(juego.puntuacion);
             
-            // Recortamos la reseña si es muy larga para que no rompa el diseño
             const resenaCorta = juego.resena && juego.resena.length > 100 
                 ? juego.resena.substring(0, 100) + '...' 
                 : (juego.resena || "Sin reseña...");
@@ -59,6 +84,7 @@ async function cargarMisJuegos(usuarioId) {
                 </div>
             `;
             contenedor.appendChild(divEntrada);
+            
         });
 
     } catch (error) {
@@ -84,4 +110,27 @@ function generarEstrellas(nota) {
 function formatearFecha(fechaStr) {
     const opciones = { day: 'numeric', month: 'short', year: 'numeric' };
     return new Date(fechaStr).toLocaleDateString('es-ES', opciones);
+}
+
+// --- FUNCIONES PARA VER LA RESEÑA COMPLETA ---
+
+function abrirModalReview(index) {
+    // Buscamos el juego en nuestra memoria usando el índice
+    const juego = listaJuegosPerfil[index];
+
+    // Rellenamos el HTML de la ventana emergente con los datos sin recortar
+    document.getElementById('titulo-review').innerText = juego.titulo;
+    document.getElementById('portada-review').src = juego.portadaUrl;
+    document.getElementById('estrellas-review').innerHTML = generarEstrellas(juego.puntuacion);
+    document.getElementById('fecha-review').innerText = `Jugado el ${formatearFecha(juego.fechaJugado)}`;
+    
+    // Si no hay reseña, ponemos un mensaje por defecto
+    document.getElementById('texto-review').innerText = juego.resena || "No escribiste ninguna reseña para este juego.";
+
+    // Mostramos la ventana
+    document.getElementById('modal-ver-review').style.display = 'flex';
+}
+
+function cerrarModalReview() {
+    document.getElementById('modal-ver-review').style.display = 'none';
 }

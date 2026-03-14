@@ -98,6 +98,24 @@ function cerrarSesion() {
 // Le decimos a la página que ejecute al vigilante nada más cargar
 document.addEventListener('DOMContentLoaded', comprobarSesion);
 
+// --- CONTADOR DE CARACTERES EN TIEMPO REAL ---
+const cajaResena = document.getElementById('resena-log');
+const contadorResena = document.getElementById('contador-resena');
+
+if (cajaResena && contadorResena) {
+    cajaResena.addEventListener('input', function() {
+        const longitudActual = this.value.length;
+        contadorResena.innerText = `${longitudActual} / 1000`;
+        
+        // Un detallito: si se acerca al límite (por ejemplo, a partir de 950), lo ponemos rojo
+        if (longitudActual >= 950) {
+            contadorResena.style.color = '#ff5252'; // Rojo de alerta
+        } else {
+            contadorResena.style.color = '#9ab'; // Vuelve al color original
+        }
+    });
+}
+
 // --- LÓGICA DEL DIARIO (LOG)
 // --- LÓGICA DEL DIARIO (LOG) ---
 
@@ -132,6 +150,7 @@ function cerrarModal() {
     document.getElementById('modal-log').style.display = 'none';
     // No vaciamos juegoActualParaLog aquí para evitar errores si el fetch tarda
     document.getElementById('form-log').reset(); 
+    document.getElementById('contador-resena').innerText = '0 / 1000';
 }
 
 async function enviarLogFinal() {

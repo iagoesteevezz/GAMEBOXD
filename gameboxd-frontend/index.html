@@ -64,9 +64,8 @@
 
                     <div class="grupo-input">
                         <label>Tu reseña:</label>
-                        <textarea id="resena-log" rows="4" placeholder="¿Qué te pareció el juego?..." style="width: 100%; padding: 10px; border-radius: 4px; background: #14181c; color: white; border: 1px solid #455a64;"></textarea>
-                    </div>
-
+                        <textarea id="resena-log" placeholder="Escribe tu reseña aquí..." maxlength="1000" style="resize: none; min-height: 100px; margin-top: 5px;"></textarea>                    </div>
+                        <div id="contador-resena" class="contador-texto">0 / 1000</div>
                     <button type="button" class="btn-principal" onclick="enviarLogFinal()">Guardar en mi Diario</button>
                 </form>
             </div>
