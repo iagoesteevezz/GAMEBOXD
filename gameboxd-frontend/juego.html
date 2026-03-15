@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cargando Juego... - GAMEBOXD</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+
+    <header>
+        <h1 style="margin: 0; color: #00e676; cursor: pointer;" onclick="window.location.href='index.html'">GAMEBOXD</h1>
+        <nav style="margin-top: 10px;">
+            <a href="index.html" style="color: white; margin: 0 10px; text-decoration: none;">Inicio</a>
+            <a href="perfil.html" style="color: white; margin: 0 10px; text-decoration: none;">Mi Perfil</a>
+        </nav>
+    </header>
+
+    <main class="contenedor-detalle">
+        
+        <aside class="columna-poster">
+            <img id="detalle-portada" src="" alt="Portada del juego" class="poster-gigante">
+            
+            <div class="acciones-juego">
+                <button class="btn-principal" style="margin-top: 15px;">➕ Añadir al Diario</button>
+            </div>
+        </aside>
+
+        <section class="columna-info">
+            <div class="cabecera-titulo">
+                <h1 id="detalle-titulo">Cargando título...</h1>
+                <span id="detalle-anio" class="anio-lanzamiento"></span>
+            </div>
+
+            <div class="meta-info-juego">
+                <div class="nota-media-global">
+                    <span class="estrellas-medias"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i></span>
+                    <span id="detalle-nota">--</span>
+                </div>
+                <div id="detalle-plataformas" class="caja-plataformas">
+                    </div>
+            </div>
+
+            <div class="seccion-sinopsis">
+                <p id="detalle-descripcion" class="texto-descripcion">Cargando descripción del juego...</p>
+            </div>
+
+            <hr style="border-color: #455a64; margin: 30px 0;">
+
+            <div class="seccion-comunidad">
+                <h3 style="color: #9ab; text-transform: uppercase; font-size: 14px;">Reseñas Recientes</h3>
+                <div id="contenedor-resenas-comunidad">
+                    <p style="color: #cbd5e1; font-style: italic;">Aún no hay reseñas para este juego. ¡Sé el primero!</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="juego.js"></script>
+</body>
+</html>

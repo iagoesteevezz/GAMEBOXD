@@ -360,3 +360,161 @@ main {
     margin-top: 4px;
     font-family: monospace; /* Queda muy chulo para números */
 }
+
+/* --- DISEÑO DE LA PÁGINA DEL JUEGO (juego.html) --- */
+
+.contenedor-detalle {
+    display: flex;
+    gap: 40px;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+    align-items: flex-start; /* Para que no se estiren las columnas solas */
+}
+
+/* Columna Izquierda (Póster) */
+.columna-poster {
+    width: 250px;
+    flex-shrink: 0; /* Evita que el texto aplaste el póster */
+}
+
+.poster-gigante {
+    width: 100%;
+    border-radius: 6px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+    border: 1px solid #455a64;
+}
+
+/* Columna Derecha (Información) */
+.columna-info {
+    flex-grow: 1;
+    min-width: 0; /* Vital para que el texto largo no rompa el diseño */
+}
+
+#detalle-titulo {
+    font-size: 32px;
+    margin: 0;
+    color: white;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.anio-lanzamiento {
+    font-size: 24px;
+    color: #9ab;
+    font-weight: normal;
+}
+
+.meta-info-juego {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #2c3440;
+}
+
+.nota-media-global {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 24px;
+    color: #00e676;
+    font-weight: bold;
+}
+
+.estrellas-medias {
+    font-size: 18px;
+}
+
+.caja-plataformas {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.etiqueta-plataforma {
+    background-color: #2c3440;
+    color: #cbd5e1;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.texto-descripcion {
+    color: #cbd5e1;
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+/* Para móviles: que el póster se ponga arriba y el texto abajo */
+@media (max-width: 768px) {
+    .contenedor-detalle {
+        flex-direction: column;
+        align-items: center;
+    }
+    .columna-poster {
+        width: 200px;
+    }
+}
+
+/* --- MENÚ FLOTANTE EN TARJETAS (ESTILO LETTERBOXD) --- */
+
+.contenedor-poster-hover {
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+    aspect-ratio: 2 / 3; /* Asegura proporción de carátula */
+}
+
+.contenedor-poster-hover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* La caja oscura con las opciones */
+.menu-hover-letterboxd {
+    position: absolute;
+    bottom: 5%; /* Empieza un poco más abajo */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(20, 24, 28, 0.95);
+    border: 1px solid #455a64;
+    padding: 8px 15px;
+    border-radius: 6px;
+    display: flex;
+    gap: 15px; /* Espacio entre iconos si pones más */
+    
+    /* Estado inicial: invisible */
+    opacity: 0;
+    pointer-events: none; /* Evita clics fantasma cuando está invisible */
+    transition: opacity 0.2s ease, bottom 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.8);
+}
+
+/* Efecto al pasar el ratón por la tarjeta completa */
+.tarjeta-juego:hover .menu-hover-letterboxd {
+    opacity: 1;
+    bottom: 10%; /* Sube un poquito al aparecer */
+    pointer-events: auto; /* Reactiva los clics */
+}
+
+/* Estilo del botón (el "+") */
+.btn-accion-icono {
+    background: none;
+    border: none;
+    color: #9ab;
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+    padding: 0;
+}
+
+.btn-accion-icono:hover {
+    color: #00e676; /* Se pone verde al hacerle hover al icono */
+    transform: scale(1.2); /* Crece un poquito */
+}

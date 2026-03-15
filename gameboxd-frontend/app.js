@@ -43,18 +43,34 @@ function renderizarJuegos(lista, tituloSeccion, esBusquedaExternal = false) {
         const tarjeta = document.createElement('div');
         tarjeta.className = 'tarjeta-juego';
 
-        // RAWG usa 'name' y 'background_image', tu Java usa 'titulo' y 'portadaUrl'
-        // Usamos || para que elija la que exista
-        const titulo = juego.name || juego.titulo;
-        const imagen = juego.background_image || juego.portadaUrl || 'https://via.placeholder.com/150x220?text=Sin+Portada';
-        const fecha = juego.released || juego.fechaLanzamiento || 'Sin fecha';
-
+        // 1. Estructura con la cajita flotante invisible
         tarjeta.innerHTML = `
-            <img src="${imagen}" alt="${titulo}">
-            <h3>${titulo}</h3>
-            <p class="fecha">${fecha}</p>
-            ${esBusquedaExternal ? `<button class="btn-add" onclick="abrirModalLog('${juego.id}')">➕ Log</button>` : ''}
+            <div class="contenedor-poster-hover">
+                <img src="${juego.background_image || 'https://via.placeholder.com/200x300?text=Sin+Imagen'}" alt="${juego.name}">
+                
+                <div class="menu-hover-letterboxd">
+                    <button class="btn-accion-icono" title="Añadir a mi Diario">➕</button>
+                    </div>
+            </div>
+            
+            <h3>${juego.name}</h3>
+            <p>${juego.released ? juego.released.substring(0, 4) : 'TBA'}</p>
         `;
+
+        // 2. Si haces clic en cualquier parte de la tarjeta, viajas a la página del juego
+        tarjeta.onclick = () => {
+            window.location.href = `juego.html?id=${juego.id}`;
+        };
+
+        // 3. EL TRUCO: Configuramos el clic del botón "+"
+        const btnLog = tarjeta.querySelector('.btn-accion-icono');
+        btnLog.onclick = (event) => {
+            // ¡Esta línea es la magia! Evita que el clic "atraviese" el botón y toque la tarjeta
+            event.stopPropagation(); 
+            
+            // Aquí llamas a la función que ya tenías para abrir la ventana de registrar
+            abrirModalLog(juego.id); // Si tu función se llama diferente (ej. mostrarModalRegistro), cámbialo aquí
+        };
 
         contenedor.appendChild(tarjeta);
     });

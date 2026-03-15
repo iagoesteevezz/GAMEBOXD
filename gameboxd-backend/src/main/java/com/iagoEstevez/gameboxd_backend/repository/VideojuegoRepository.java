@@ -7,4 +7,6 @@ import java.util.List;
 @Repository
 public interface VideojuegoRepository extends JpaRepository<Videojuego, Integer> {
     List<Videojuego> findByUsuarioId(Integer usuarioId);
+    // Busca todas las reseñas de un juego en concreto
+    List<Videojuego> findByIdRawg(Long idRawg);
 }

@@ -3,6 +3,7 @@ package com.iagoEstevez.gameboxd_backend.controller;
 import com.iagoEstevez.gameboxd_backend.model.Videojuego;
 import com.iagoEstevez.gameboxd_backend.repository.VideojuegoRepository;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,4 +40,10 @@ public class VideojuegoController {
     public List<Videojuego> obtenerJuegosPorUsuario(@PathVariable Integer usuarioId) {
         return videojuegoRepository.findByUsuarioId(usuarioId);
     }
+
+    @GetMapping("/rawg/{idRawg}")
+    public ResponseEntity<List<Videojuego>> obtenerResenasDeUnJuego(@PathVariable Long idRawg) {
+    List<Videojuego> resenas = videojuegoRepository.findByIdRawg(idRawg);
+        return ResponseEntity.ok(resenas);
+}
 }
